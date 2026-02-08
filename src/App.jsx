@@ -1,28 +1,28 @@
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import Loading from './components/Loading';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import Navigation from './components/Navigation';
 import RegisterPage from './pages/RegisterPage';
 import DetailPage from './pages/DetailPage';
+import { asyncPreloadProcess } from './states/isPreload/action';
+import { asyncUnsetAuthUser } from './states/authUser/action';
 
 function App() {
-  const {
-    authUser = null,
-    isPreload = false,
-  } = {}; // @TODO: get authUser and isPreLoad state from store
+  const { authUser = null, isPreload = false } = useSelector(
+    (states) => states,
+  );
 
-  const dispatch = null; // @TODO: get dispatch function from store
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // @TODO: dispatch async action to preload app
-
+    dispatch(asyncPreloadProcess());
   }, [dispatch]);
 
   const onSignOut = () => {
-    // @TODO: dispatch async action to sign out
-
+    dispatch(asyncUnsetAuthUser());
   };
 
   if (isPreload) {
@@ -35,8 +35,8 @@ function App() {
         <Loading />
         <main>
           <Routes>
-            <Route path="/*" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route path='/*' element={<LoginPage />} />
+            <Route path='/register' element={<RegisterPage />} />
           </Routes>
         </main>
       </>
@@ -46,19 +46,18 @@ function App() {
   return (
     <>
       <Loading />
-      <div className="app-container">
+      <div className='app-container'>
         <header>
           <Navigation authUser={authUser} signOut={onSignOut} />
         </header>
         <main>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/talks/:id" element={<DetailPage />} />
+            <Route path='/' element={<HomePage />} />
+            <Route path='/talks/:id' element={<DetailPage />} />
           </Routes>
         </main>
       </div>
     </>
   );
 }
-
 export default App;
